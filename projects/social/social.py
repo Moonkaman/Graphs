@@ -155,4 +155,4 @@ if __name__ == '__main__':
     sumuser = 0
     for friends in connections:
         sumuser += len(connections[friends])
-    print(f'Average degree of seperation is {sumuser / len(connections)}')
+    print(f'Average degree of seperation is {(sumuser / len(connections)) - 1}')
