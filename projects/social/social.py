@@ -1,8 +1,13 @@
+import random
+import sys
+sys.path.append('../graph')
+from util import Queue
 
 
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -40,13 +45,47 @@ class SocialGraph:
 
         The number of users must be greater than the average number of friendships.
         """
+        # Time Complexity: O(numUsers ^ 2)
+        # Space Complexity: O(numUsers ^ 2)
+        """
+        Takes a number of users and an average number of friendships
+        as arguments
+
+        Creates that number of users and a randomly distributed friendships
+        between those users.
+
+        The number of users must be greater than the average number of friendships.
+        """
         # Reset graph
         self.lastID = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # Add users
+        # Time Complexity: O(numUsers)
+        # Space Complexity: O(numUsers)
+        for i in range(numUsers):
+            self.addUser(f"User {i + 1}")
+
+        # Create friendships
+        # avgFriendships = totalFriendships / numUsers
+        # totalFriendships = avgFriendships * numUsers
+        # Time Complexity: O(numUsers ^ 2)
+        # Space Complexity: O(numUsers ^ 2)
+        possibleFriendships = []
+        for userID in self.users:
+            for friendID in range(userID + 1, self.lastID + 1):
+                possibleFriendships.append((userID, friendID))
+
+        # Time Complexity: O(numUsers ^ 2)
+        # Space Complexity: O(1)
+        random.shuffle(possibleFriendships)
+
+        # Time Complexity: O(avgFriendships * numUsers // 2)
+        # Space Complexity: O(avgFriendships * numUsers // 2)
+        for friendship_index in range(avgFriendships * numUsers // 2):
+            friendship = possibleFriendships[friendship_index]
+            self.addFriendship(friendship[0], friendship[1])
 
         # Create friendships
 
@@ -58,9 +97,54 @@ class SocialGraph:
         extended network with the shortest friendship path between them.
 
         The key is the friend's ID and the value is the path.
+
+            def bfs(self, starting_vertex, destination_vertex):
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        visited = {}
+
+        qu = Queue()
+        qu.enqueue(userID)
+        while qu.size() > 0:
+            user = qu.dequeue()
+            if user not in visited:
+                print(user)
+                visited[user] = None
+                for n in self.friendships[user]:
+                    if n not in visited:
+                        qu.enqueue(n)
+        print('------------------')
+        print(visited)
+        print('------------------')
+
+        # Create an empty Queue
+        for f in visited:
+            print(f)
+            q = Queue()
+            # Create an empty Visited set
+            been = set()
+            # Add A PATH TO the starting vertex to the queue
+            q.enqueue([userID])
+            # While the queue is not empty...
+            while q.size() > 0:
+                # Dequeue the first PATH
+                path = q.dequeue()
+                # Grab the last vertex of the path
+                v = path[-1]
+                # Check if it's our destination
+                if v == f:
+                    visited[f] = path
+                    break
+                # If it has not been visited...
+                if v not in been:
+                    # Mark it as visited (add it to the visited set)
+                    been.add(v)
+                    # Then enqueue PATHS TO each of its neighbors in the queue
+                    for neighbor in self.friendships[v]:
+                        path_copy = path.copy()
+                        path_copy.append(neighbor)
+                        q.enqueue(path_copy)
+            # Note that this is a dictionary, not a set
+            # !!!! IMPLEMENT ME
         return visited
 
 
