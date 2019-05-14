@@ -107,18 +107,16 @@ class SocialGraph:
         while qu.size() > 0:
             user = qu.dequeue()
             if user not in visited:
-                print(user)
                 visited[user] = None
                 for n in self.friendships[user]:
                     if n not in visited:
                         qu.enqueue(n)
         print('------------------')
-        print(visited)
+        print(len(visited))
         print('------------------')
 
         # Create an empty Queue
         for f in visited:
-            print(f)
             q = Queue()
             # Create an empty Visited set
             been = set()
@@ -150,7 +148,11 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
+    sg.populateGraph(1000, 5)
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
+    sumuser = 0
+    for friends in connections:
+        sumuser += len(connections[friends])
+    print(f'Average degree of seperation is {sumuser / len(connections)}')
